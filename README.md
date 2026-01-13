@@ -18,7 +18,7 @@ The API automatically applies Yoda translations for legendary Pokemon or cave dw
 
 ```bash
 # Clone and install
-git clone <repository-url>
+git clone git@github.com:MohamedDounnani94/pokemon.git
 cd pokemon
 npm install
 
