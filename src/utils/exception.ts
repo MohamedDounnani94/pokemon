@@ -21,7 +21,7 @@ export class PokemonException extends Error implements AppException {
 }
 
 export class Exception {
-	mandatory(parameter?: string): AppException {
+	static mandatory(parameter?: string): AppException {
 		let message = "The input object parameter is mandatory";
 
 		if (parameter) {
@@ -35,7 +35,7 @@ export class Exception {
 		});
 	}
 
-	generic(stacktrace?: any, message?: string): AppException {
+	static generic(stacktrace?: any, message?: string): AppException {
 		return new PokemonException({
 			code: 500,
 			message: message || "Generic error",
@@ -43,7 +43,7 @@ export class Exception {
 		});
 	}
 
-	notFound(objectName: string): AppException {
+	static notFound(objectName: string): AppException {
 		return new PokemonException({
 			code: 404,
 			message: `The ${objectName} was not found`,
