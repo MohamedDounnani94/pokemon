@@ -49,4 +49,11 @@ export class Exception {
 			message: `The ${objectName} was not found`,
 		});
 	}
+
+	static serviceUnavailable(message?: string): AppException {
+		return new PokemonException({
+			code: 503,
+			message: message || "Service temporarily unavailable",
+		});
+	}
 }

@@ -186,11 +186,12 @@ describe('PokemonService', () => {
       mockedAxios.get.mockRejectedValue(mockedResponse);
 
       await expect(pokemonService.getPokemonByName(pokemonName)).rejects.toMatchObject({
-        code: 500,
+        code: 503,
+        message: expect.stringContaining('unavailable'),
       });
     });
 
-    test('should handle network errors', async () => {
+    test('should handle network errors as 503', async () => {
       const pokemonName = 'bulbasaur';
 
       const networkError = {
@@ -201,7 +202,8 @@ describe('PokemonService', () => {
       mockedAxios.get.mockRejectedValue(networkError);
 
       await expect(pokemonService.getPokemonByName(pokemonName)).rejects.toMatchObject({
-        code: 500,
+        code: 503,
+        message: expect.stringContaining('unavailable'),
       });
     });
 

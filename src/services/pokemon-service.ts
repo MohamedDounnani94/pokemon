@@ -67,6 +67,11 @@ export class PokemonService {
 				logger.error(`Pokemon not found: ${status}`);
 				throw Exception.notFound("pokemon");
 			}
+
+			if (status === 503 || !status) {
+				logger.error("Pokemon API unavailable", exception);
+				throw Exception.serviceUnavailable("Pokemon API is temporarily unavailable");
+			}
 			
 			logger.error("Error fetching pokemon data", exception);
 			throw Exception.generic(exception);

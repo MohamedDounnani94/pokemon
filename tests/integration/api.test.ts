@@ -91,6 +91,30 @@ describe('Pokemon API Integration Tests', () => {
 			expect(response.status).toBe(500);
 			expect(response.body).toHaveProperty('error');
 		});
+
+		test('should return 503 when Pokemon API is unavailable', async () => {
+			mockedAxios.get.mockRejectedValue({
+				response: { status: 503 },
+			});
+
+			const response = await request(app).get('/pokemon/pikachu');
+
+			expect(response.status).toBe(503);
+			expect(response.body).toHaveProperty('error');
+			expect(response.body.error).toContain('unavailable');
+		});
+
+		test('should return 503 on network errors', async () => {
+			mockedAxios.get.mockRejectedValue({
+				code: 'ECONNREFUSED',
+				message: 'Network Error',
+			});
+
+			const response = await request(app).get('/pokemon/pikachu');
+
+			expect(response.status).toBe(503);
+			expect(response.body).toHaveProperty('error');
+		});
 	});
 
 	describe('GET /pokemon/translated/:name', () => {
