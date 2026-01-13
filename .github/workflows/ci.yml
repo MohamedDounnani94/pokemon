@@ -1,0 +1,131 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-docker:
+    name: Build Test Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build test Docker image
+        run: docker build --target test -t pokemon:test .
+
+      - name: Save Docker image
+        run: docker save pokemon:test -o /tmp/pokemon.tar
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp/pokemon.tar
+          retention-days: 1
+
+  lint:
+    name: Linter
+    runs-on: ubuntu-latest
+    needs: build-docker
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: docker load --input /tmp/pokemon.tar
+
+      - name: Run ESLint
+        run: docker run --rm pokemon:test npm run lint
+
+      - name: Run TypeScript check
+        run: docker run --rm pokemon:test npm run typecheck
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: build-docker
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: docker load --input /tmp/pokemon.tar
+
+      - name: Run unit tests
+        run: docker run --rm pokemon:test npm test -- tests/unit/
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: build-docker
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: docker load --input /tmp/pokemon.tar
+
+      - name: Run integration tests
+        run: docker run --rm pokemon:test npm test -- tests/integration/
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: build-docker
+
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp
+
+      - name: Load Docker image
+        run: docker load --input /tmp/pokemon.tar
+
+      - name: NPM audit
+        run: docker run --rm pokemon:test npm audit --audit-level=moderate
+
+  pr-validation:
+    name: PR Validation
+    runs-on: ubuntu-latest
+    needs: [lint, unit-tests, integration-tests, security]
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Validate PR metadata
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { title, labels } = context.payload.pull_request;
+            const conventionalCommitPattern = /^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?!?: .+/;
+            
+            if (!conventionalCommitPattern.test(title)) {
+              core.warning(`PR title should follow Conventional Commits format: ${title}`);
+            }
+            
+            if (labels.length === 0) {
+              core.warning('Consider adding labels: bug, feature, enhancement, documentation, dependencies, breaking-change');
+            }
+            
+            core.info('✅ All checks passed - PR is ready for review');

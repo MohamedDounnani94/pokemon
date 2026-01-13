@@ -1,0 +1,56 @@
+{
+  "name": "pokemon",
+  "version": "1.0.0",
+  "description": "Pokemon API with fun translations",
+  "main": "src/server.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node -r dotenv/config build/server.js",
+    "dev": "nodemon -r dotenv/config ./src/server.ts",
+    "test": "NODE_ENV=test jest --verbose",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "lint": "eslint ./src --ext .ts --ext .js",
+    "lint-fix": "eslint ./src --fix --ext .ts --ext .js",
+    "clean": "rimraf build/*",
+    "build": "npm run clean && tsc --build --verbose",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "MohamedDounnani",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "axios-retry": "^4.5.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.0.0",
+    "node-cache": "^5.1.2",
+    "pino": "^10.1.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node-cache": "^4.1.3",
+    "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "@typescript-eslint/eslint-plugin": "^8.18.1",
+    "@typescript-eslint/parser": "^8.18.1",
+    "dotenv": "^17.2.3",
+    "eslint": "^9.17.0",
+    "jest": "^30.2.0",
+    "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
+    "rimraf": "^6.0.1",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
+  }
+}
