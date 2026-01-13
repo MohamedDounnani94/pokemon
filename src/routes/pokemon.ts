@@ -41,6 +41,8 @@ const translationService = new TranslationService();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         $ref: '#/components/responses/TooManyRequests'
  *       500:
  *         description: Internal server error
  *         content:
@@ -92,6 +94,8 @@ router.get('/pokemon/:name', async (req: Request, res: Response, next: NextFunct
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       429:
+ *         $ref: '#/components/responses/TooManyRequests'
  *       500:
  *         description: Internal server error
  *         content:

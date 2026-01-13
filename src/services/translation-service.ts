@@ -1,4 +1,5 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import type {
 	TranslateAuthor,
 	TranslationApiResponse,
@@ -8,6 +9,19 @@ import logger from "../utils/logger";
 import cache from "../utils/cache";
 
 const TRANSLATION_BASE_ENDPOINT = "https://api.funtranslations.com/translate";
+
+// Configure retry for Translation API  
+axiosRetry(axios, {
+	retries: 3,
+	retryDelay: axiosRetry.exponentialDelay,
+	retryCondition: (error) => {
+		if (error.response?.status === 429) return false;
+		return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.response?.status === 503;
+	},
+	onRetry: (retryCount, error) => {
+		logger.warn(`Retry attempt ${retryCount} for ${error.config?.url}`);
+	},
+});
 
 export class TranslationService {
 	async getTranslatedDescription(

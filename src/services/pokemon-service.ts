@@ -1,10 +1,24 @@
 import axios from "axios";
+import axiosRetry from "axios-retry";
 import type { Pokemon, PokemonApiResponse } from "../types/pokemon";
 import { Exception } from "../utils/exception";
 import cache from "../utils/cache";
 import logger from "../utils/logger";
 
 const POKEMON_BASE_ENDPOINT = "https://pokeapi.co/api/v2/pokemon-species";
+
+// Configure retry for Pokemon API
+axiosRetry(axios, {
+	retries: 3,
+	retryDelay: axiosRetry.exponentialDelay,
+	retryCondition: (error) => {
+		if (error.response?.status === 429) return false;
+		return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.response?.status === 503;
+	},
+	onRetry: (retryCount, error) => {
+		logger.warn(`Retry attempt ${retryCount} for ${error.config?.url}`);
+	},
+});
 
 export class PokemonService {
 	/**
