@@ -7,7 +7,7 @@ import { Exception } from "../utils/exception";
 import logger from "../utils/logger";
 import cache from "../utils/cache";
 
-const TRANSLATION_BASE_ENDPOINT = "https://api.funtranslations2.com/translate";
+const TRANSLATION_BASE_ENDPOINT = "https://api.funtranslations.com/translate";
 
 export class TranslationService {
 	async getTranslatedDescription(

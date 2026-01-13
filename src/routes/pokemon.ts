@@ -7,6 +7,47 @@ const router = Router();
 const pokemonService = new PokemonService();
 const translationService = new TranslationService();
 
+/**
+ * @swagger
+ * /pokemon/{name}:
+ *   get:
+ *     summary: Get Pokemon by name
+ *     description: Retrieve basic Pokemon information including name, description, habitat, and legendary status.
+ *     tags: [Pokemon]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Pokemon name (case-insensitive)
+ *         example: mewtwo
+ *     responses:
+ *       200:
+ *         description: Pokemon found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Pokemon'
+ *       400:
+ *         description: Invalid input - name parameter missing
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Pokemon not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/pokemon/:name', async (req: Request, res: Response, next: NextFunction) => {
 	const name = req.params.name as string;
 	
@@ -23,7 +64,41 @@ router.get('/pokemon/:name', async (req: Request, res: Response, next: NextFunct
 	}
 });
 
-
+/**
+ * @swagger
+ * /pokemon/translated/{name}:
+ *   get:
+ *     summary: Get Pokemon with translated description
+ *     description: Returns Pokemon with fun translated description. Legendary Pokemon or cave dwellers get Yoda translation, others get Shakespeare translation.
+ *     tags: [Pokemon]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Pokemon name (case-insensitive)
+ *         example: mewtwo
+ *     responses:
+ *       200:
+ *         description: Pokemon found with translated description
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Pokemon'
+ *       404:
+ *         description: Pokemon not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 router.get('/pokemon/translated/:name', async (req: Request, res: Response, next: NextFunction) => {
 	const name = req.params.name as string;
 	
@@ -39,7 +114,7 @@ router.get('/pokemon/translated/:name', async (req: Request, res: Response, next
 		const translator = pokemon.isLegendary || pokemon.habitat === 'cave' 
 			? TranslateAuthor.YODA 
 			: TranslateAuthor.SHAKESPEARE;
-		
+
 		try {
 			pokemon.description = await translationService.getTranslatedDescription(
 				translator,
