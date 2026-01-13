@@ -6,6 +6,7 @@ import cache from "../utils/cache";
 import logger from "../utils/logger";
 
 const POKEMON_BASE_ENDPOINT = "https://pokeapi.co/api/v2/pokemon-species";
+const POKEMON_CACHE_TTL = 86400; // 24 hours - Pokemon data rarely changes
 
 // Configure retry for Pokemon API
 axiosRetry(axios, {
@@ -57,7 +58,7 @@ export class PokemonService {
 				habitat: data.habitat?.name || "",
 			};
 
-			cache.set(cacheKey, pokemon, 86400);
+			cache.set(cacheKey, pokemon, POKEMON_CACHE_TTL);
 			return pokemon;
 		} catch (exception: any) {
 			const status = exception.response?.status;

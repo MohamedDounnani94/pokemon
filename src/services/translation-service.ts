@@ -9,6 +9,7 @@ import logger from "../utils/logger";
 import cache from "../utils/cache";
 
 const TRANSLATION_BASE_ENDPOINT = "https://api.funtranslations.com/translate";
+const TRANSLATION_CACHE_TTL = 86400; // 24 hours - Translations are deterministic and API has strict rate limits
 
 // Configure retry for Translation API  
 axiosRetry(axios, {
@@ -39,7 +40,7 @@ export class TranslationService {
 			const endpoint = `${TRANSLATION_BASE_ENDPOINT}/${author}`;
 			const { data } = await axios.post<TranslationApiResponse>(endpoint, { text });
 			const translated = data.contents.translated;
-			cache.set(cacheKey, translated, 3600);
+			cache.set(cacheKey, translated, TRANSLATION_CACHE_TTL);
 			return translated;
 		} catch (error: any) {
 			if (error.response?.status === 429) {
