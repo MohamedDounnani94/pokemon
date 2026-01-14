@@ -162,6 +162,8 @@ npm run typecheck       # TypeScript type checking
 8. **API Versioning**: Support `/v1/pokemon` for backward compatibility
 9. **Rate Limiting**: Move from application-level to load balancer/API gateway for better scalability and DDoS protection or define a better strategy by configuring suitable windowMs values and maximum request limits.
 10. **CI/CD Pipeline**: Build a GitHub Actions–based CD pipeline to build and push Docker images, then deploy them to Kubernetes with automated rollout and rollback support.
+11. **HTTPS/TLS Termination**: Implement TLS termination at infrastructure layer (load balancer, reverse proxy like Nginx/Traefik) rather than in the application, with HSTS headers and HTTP-to-HTTPS redirects
+
 
 ### Code Quality
 - Increase error scenario coverage
