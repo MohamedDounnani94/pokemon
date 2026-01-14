@@ -50,7 +50,7 @@ const translationService = new TranslationService();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/pokemon/:name', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:name', async (req: Request, res: Response, next: NextFunction) => {
 	const name = req.params.name as string;
 	
 	if (!name || !name.trim()) {
@@ -103,7 +103,7 @@ router.get('/pokemon/:name', async (req: Request, res: Response, next: NextFunct
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/pokemon/translated/:name', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/translated/:name', async (req: Request, res: Response, next: NextFunction) => {
 	const name = req.params.name as string;
 	
 	if (!name || !name.trim()) {

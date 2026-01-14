@@ -45,7 +45,7 @@ curl http://localhost:3000/pokemon/translated/pikachu
 
 - **TypeScript-first**: Full type safety and excellent developer experience
 - **Caching**: In-memory cache
-- **Rate Limiting**: 100 requests/minute per IP
+- **Rate Limiting**: 100 requests/minute per IP protecting `/pokemon` endpoints
 - **Retry Logic**: Exponential backoff for failed external API calls
 - **Docker Ready**: Multi-stage builds with production optimizations
 - **API Docs**: Interactive Swagger UI at `/api-docs`
