@@ -10,8 +10,8 @@ import cache from './utils/cache';
 const port = process.env.SERVER_PORT || 3000;
 const app = express();
 
-// Rate limiting configuration
-const limiter = rateLimit({
+// Rate limiting configuration - only for Pokemon API routes
+const pokemonApiLimiter = rateLimit({
 	windowMs: 60 * 1000, // 1 minute
 	max: 10, // 10 requests per minute
 	message: 'Too many requests from this IP, please try again later.',
@@ -22,7 +22,6 @@ const limiter = rateLimit({
 
 app.use(helmet());
 app.use(express.json());
-app.use(limiter);
 
 
 /**
@@ -83,7 +82,7 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 // API routes
-app.use('/', pokemonRouter);
+app.use('/pokemon', pokemonApiLimiter, pokemonRouter);
 
 // Swagger documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
