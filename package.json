@@ -21,7 +21,7 @@
   "author": "MohamedDounnani",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.7.9",
+    "axios": "^1.13.3",
     "axios-retry": "^4.5.0",
     "express": "^5.2.1",
     "express-rate-limit": "^8.2.1",
